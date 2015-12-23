@@ -27,14 +27,16 @@ function mapInit() {
 
 	// kml method. this kml file has 25,000 points (the limit imposed by google per kml file)
 	// i think one can use a max of 5 kml files
-	var ctaLayer = new google.maps.KmlLayer({
-    	url: "https://raw.githubusercontent.com/stackTom/test/master/geo_velocity.kml",
-    	map: gmap
-  	});
+	for (var i = 1; i < 13; i++) {
+		var ctaLayer = new google.maps.KmlLayer({
+	    	url: "https://raw.githubusercontent.com/stackTom/gmapsTestKML/master/test_kml/file" + i + ".kml",
+	    	map: gmap
+	  	});
+	}
 
-  	google.maps.event.addListener(ctaLayer, "click", function(event) {
-  		console.log(event.featureData.description);
-  	});
+  	/*google.maps.event.addListener(ctaLayer, "click", function(event) {
+  		console.log(event.featureData);
+  	});*/
 
 	// my test circle/point class. one could have a loop to plot these. i am working on a test for this now
 	// so we can determine which is more efficient/practical for our purposes. might get it done today as it

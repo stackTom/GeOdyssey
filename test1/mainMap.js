@@ -18,7 +18,8 @@ function GreenCircle(mapToDisplayOn, centerPoint) {
 }
 
 // jQuery find is way too slow. No idea what sort of magic Google uses to parse KML's into
-// placemarks so quickly
+// placemarks so quickly. EDIT: an optimization I made to make it quicker: find only "Document"
+// in the data and not each placemark, as this was way too slow
 function customKmlLayer(url, map) {
 	this.placemarks = [];
 	var oldThis = this;
@@ -28,22 +29,25 @@ function customKmlLayer(url, map) {
 		//loop through placemarks tags
 		$(data).find("Document").each(function(index, value) {
 			//get coordinates and place name
-			coords = $(this).find("coordinates").text();
-			place = $(this).find("name").text();
-			//store as JSON
-			c = coords.split(",");
-			var numCoords = c.length;
-
+			var findObj = $(this).find("coordinates");
+			var coords = [];
+			$(this).find("coordinates").each(function() {
+				coords.push(this.innerHTML);
+			});
+			var place = $(this).find("name").text();
+			var numCoords = coords.length;
 			/*var img = {
 				url: "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png",
 				origin: new google.maps.Point(0, 0),
 				scaledSize: new google.maps.Size(7, 8)
 			};*/
-			for (var i = 0; i < numCoords; i += 2) {
+			for (var i = 0; i < numCoords; i++) {
+				var c = coords[i].split(",");
+
 				var marker = new google.maps.Marker({
-					position: { lat: parseFloat(c[i]), lng: parseFloat(c[i + 1]) },
+					position: { lat: parseFloat(c[1]), lng: parseFloat(c[0]) },
 					//icon: img,
-					map: map,
+					//map: map,
 					title: "place"
 				});
 				marker.addListener("click", function() {
@@ -52,6 +56,13 @@ function customKmlLayer(url, map) {
 				oldThis.placemarks.push(marker);
 			}
 		});
+		// jQuery GET is async, so we gotta figure out a way to call a func to create the
+		// markers on the map, else we might get an undefined array. example, when the below
+		// two lines were below, the get async thread wouldn't finish in time before these two
+		// lines were called, leading to an undefined array. solution: pass an onDone function
+		// to thi function
+		var test = new MarkerClusterer(map);
+		test.addMarkers(oldThis.placemarks);
 	});
 }
 
@@ -65,10 +76,10 @@ function mapInit() {
 
 	// kml method. this kml file has 25,000 points (the limit imposed by google per kml file)
 	// i think one can use a max of 5 kml files
-	for (var i = 1; i < 13; i++) {
+	for (var i = 1; i < 2; i++) {
 		var ctaLayer = new customKmlLayer("https://raw.githubusercontent.com/stackTom/gmapsTestKML/master/test_kml/file" + i + ".kml",
 							gmap);
-		console.log("done layer " + i)
+		console.log("done layer " + i);
 	}
 
   	/*google.maps.event.addListener(ctaLayer, "click", function(event) {

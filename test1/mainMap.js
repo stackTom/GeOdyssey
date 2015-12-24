@@ -17,10 +17,48 @@ function GreenCircle(mapToDisplayOn, centerPoint) {
     });
 }
 
+// jQuery find is way too slow. No idea what sort of magic Google uses to parse KML's into
+// placemarks so quickly
+function customKmlLayer(url, map) {
+	this.placemarks = [];
+	var oldThis = this;
+	//url = "doc.kml";
+
+	$.get(url, function(data) {
+		//loop through placemarks tags
+		$(data).find("Document").each(function(index, value) {
+			//get coordinates and place name
+			coords = $(this).find("coordinates").text();
+			place = $(this).find("name").text();
+			//store as JSON
+			c = coords.split(",");
+			var numCoords = c.length;
+
+			var img = {
+				url: "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png",
+				origin: new google.maps.Point(0, 0),
+				scaledSize: new google.maps.Size(7, 8)
+			};
+			for (var i = 0; i < numCoords; i += 2) {
+				var marker = new google.maps.Marker({
+					position: { lat: parseFloat(c[i]), lng: parseFloat(c[i + 1]) },
+					icon: img,
+					map: map,
+					title: "place"
+				});
+				marker.addListener("click", function() {
+					console.log(this.position.lat());
+				});
+				oldThis.placemarks.push(marker);
+			}
+		});
+	});
+}
+
 function mapInit() {
 	var mapOpts = {
 		center: { lat: 26.5, lng: -81.0 },
-		zoom: 5
+		zoom: 1
 	};
 
 	var gmap = new google.maps.Map(document.getElementById("map-container"), mapOpts);
@@ -28,10 +66,9 @@ function mapInit() {
 	// kml method. this kml file has 25,000 points (the limit imposed by google per kml file)
 	// i think one can use a max of 5 kml files
 	for (var i = 1; i < 13; i++) {
-		var ctaLayer = new google.maps.KmlLayer({
-	    	url: "https://raw.githubusercontent.com/stackTom/gmapsTestKML/master/test_kml/file" + i + ".kml",
-	    	map: gmap
-	  	});
+		var ctaLayer = new customKmlLayer("https://raw.githubusercontent.com/stackTom/gmapsTestKML/master/test_kml/file" + i + ".kml",
+							gmap);
+		console.log("done layer " + i)
 	}
 
   	/*google.maps.event.addListener(ctaLayer, "click", function(event) {

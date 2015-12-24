@@ -34,15 +34,15 @@ function customKmlLayer(url, map) {
 			c = coords.split(",");
 			var numCoords = c.length;
 
-			var img = {
+			/*var img = {
 				url: "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png",
 				origin: new google.maps.Point(0, 0),
 				scaledSize: new google.maps.Size(7, 8)
-			};
+			};*/
 			for (var i = 0; i < numCoords; i += 2) {
 				var marker = new google.maps.Marker({
 					position: { lat: parseFloat(c[i]), lng: parseFloat(c[i + 1]) },
-					icon: img,
+					//icon: img,
 					map: map,
 					title: "place"
 				});
@@ -58,7 +58,7 @@ function customKmlLayer(url, map) {
 function mapInit() {
 	var mapOpts = {
 		center: { lat: 26.5, lng: -81.0 },
-		zoom: 1
+		zoom: 5
 	};
 
 	var gmap = new google.maps.Map(document.getElementById("map-container"), mapOpts);

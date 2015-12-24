@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+    <name>25,000 points example</name>
+    <styleUrl>#check-hide-children</styleUrl>
+    <Style id="check-hide-children">
+	<ListStyle>
+		<listItemType>checkHideChildren</listItemType>
+	</ListStyle>
+    </Style>
+<Style id="sn_1">
+	<IconStyle>
+		<Icon>
+			<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+		</Icon>
+	</IconStyle>
+	<LabelStyle>
+		<scale>0</scale>
+	</LabelStyle>
+    </Style>
+    <Style id="sh_1">
+	<IconStyle>
+		<scale>1.1</scale>
+		<Icon>
+			<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+		</Icon>
+	</IconStyle>
+	<LabelStyle>
+		<scale>0.9</scale>
+	</LabelStyle>
+    </Style>
+    <StyleMap id="style1">
+	<Pair>
+	   <key>normal</key>
+	   <styleUrl>#sn_1</styleUrl>
+	</Pair>
+	<Pair>
+	   <key>highlight</key>
+	   <styleUrl>#sh_1</styleUrl>
+	</Pair>
+    </StyleMap>
+<Placemark><name>P1</name><styleUrl>#s1</styleUrl><Point><coordinates>41.40338, 2.17403</coordinates></Point></Placemark>
+</Document>
+</kml>

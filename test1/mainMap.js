@@ -20,7 +20,7 @@ function GreenCircle(mapToDisplayOn, centerPoint) {
 // jQuery find is way too slow. No idea what sort of magic Google uses to parse KML's into
 // placemarks so quickly. EDIT: an optimization I made to make it quicker: find only "Document"
 // in the data and not each placemark, as this was way too slow
-function customKmlLayer(url, map) {
+function customKmlLayer(url, map, marker) {
 	this.placemarks = [];
 	var oldThis = this;
 	//url = "doc.kml";
@@ -61,25 +61,33 @@ function customKmlLayer(url, map) {
 		// two lines were below, the get async thread wouldn't finish in time before these two
 		// lines were called, leading to an undefined array. solution: pass an onDone function
 		// to thi function
-		var test = new MarkerClusterer(map);
-		test.addMarkers(oldThis.placemarks);
+		marker.addMarkers(oldThis.placemarks);
+		console.log("done marker");
 	});
+}
+
+function doSetTimeout(i, map, cluster) {
+	setTimeout(function() {
+			var ctaLayer = new customKmlLayer("https://raw.githubusercontent.com/stackTom/gmapsTestKML/master/test_kml/file" + i + ".kml",
+							map, cluster);
+			console.log("done layer " + i);
+		}, 1000);
 }
 
 function mapInit() {
 	var mapOpts = {
 		center: { lat: 26.5, lng: -81.0 },
-		zoom: 5
+		zoom: 1
 	};
 
 	var gmap = new google.maps.Map(document.getElementById("map-container"), mapOpts);
+	var test = new MarkerClusterer(gmap);
 
 	// kml method. this kml file has 25,000 points (the limit imposed by google per kml file)
 	// i think one can use a max of 5 kml files
-	for (var i = 1; i < 2; i++) {
-		var ctaLayer = new customKmlLayer("https://raw.githubusercontent.com/stackTom/gmapsTestKML/master/test_kml/file" + i + ".kml",
-							gmap);
-		console.log("done layer " + i);
+
+	for (var i = 1; i < 13; i++) {
+		doSetTimeout(i, gmap, test);
 	}
 
   	/*google.maps.event.addListener(ctaLayer, "click", function(event) {

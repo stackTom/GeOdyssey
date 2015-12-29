@@ -19,7 +19,7 @@ function mapInit() {
 	for (var i = 0; i < 13; i++) {
 		var ctaLayer = new google.maps.KmlLayer({
    			url: "https://raw.githubusercontent.com/stackTom/gmapsTestKML/master/test_kml/file" + i + ".kml",
-   			preserveViewport: true, // don't center view the KML's when we render them
+   			preserveViewport: true, // don't center the view when we render the KML's
     		suppressInfoWindows: true
   		});
 

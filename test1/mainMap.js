@@ -4,7 +4,7 @@ var layers = [];
 function mapInit() {
 	var mapOpts = {
 		center: { lat: 26.5, lng: -81.0 },
-		zoom: 1
+		zoom: 3
 	};
 
 	gmap = new google.maps.Map(document.getElementById("map-container"), mapOpts);

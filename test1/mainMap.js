@@ -62,7 +62,7 @@ function getPointData(str) {
 		// code for IE6, IE5
 		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
-	// set callback
+	// set callback for when php sends back data
 	xmlhttp.onreadystatechange = function() {
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 			var popup = document.getElementById("popup"); // this can be styled much better... just an example
